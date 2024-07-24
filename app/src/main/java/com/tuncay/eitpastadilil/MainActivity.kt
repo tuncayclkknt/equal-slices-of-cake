@@ -2,41 +2,41 @@
 
 package com.tuncay.eitpastadilil
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.Manifest
 import android.content.pm.PackageManager
 import android.hardware.Camera
+import android.os.Bundle
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.widget.Button
+import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.tuncay.eitpastadilil.databinding.ActivityMainBinding
 
+class MainActivity : ComponentActivity(), SurfaceHolder.Callback {
 
-class MainActivity : AppCompatActivity(),SurfaceHolder.Callback  {
     private val CAMERA_REQUEST_CODE = 100
-    private lateinit var surfaceView: SurfaceView
-    private lateinit var surfaceHolder: SurfaceHolder
+    private lateinit var binding: ActivityMainBinding
     private var camera: Camera? = null
-    private lateinit var actionButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         enableEdgeToEdge()
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-
-        surfaceView = findViewById(R.id.surfaceView)
-        surfaceHolder = surfaceView.holder
+        val surfaceView: SurfaceView = binding.surfaceView
+        val surfaceHolder: SurfaceHolder = surfaceView.holder
         surfaceHolder.addCallback(this)
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(),SurfaceHolder.Callback  {
         try {
             camera = Camera.open()
             camera?.setDisplayOrientation(90)
-            camera?.setPreviewDisplay(surfaceHolder)
+            camera?.setPreviewDisplay(binding.surfaceView.holder)
             camera?.startPreview()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity(),SurfaceHolder.Callback  {
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-        if (surfaceHolder.surface == null) {
+        if (holder.surface == null) {
             return
         }
         camera?.stopPreview()
@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity(),SurfaceHolder.Callback  {
                 it.setPreviewSize(previewSize.width, previewSize.height)
                 camera?.parameters = it
             }
-            camera?.setPreviewDisplay(surfaceHolder)
+            camera?.setPreviewDisplay(holder)
             camera?.startPreview()
         } catch (e: Exception) {
             e.printStackTrace()

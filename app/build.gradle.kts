@@ -7,6 +7,11 @@ android {
     namespace = "com.tuncay.eitpastadilil"
     compileSdk = 34
 
+    buildFeatures{
+        viewBinding = true
+    }
+
+
     defaultConfig {
         applicationId = "com.tuncay.eitpastadilil"
         minSdk = 24
