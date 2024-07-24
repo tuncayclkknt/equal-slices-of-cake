@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity(),SurfaceHolder.Callback  {
             insets
         }
 
+
         surfaceView = findViewById(R.id.surfaceView)
         surfaceHolder = surfaceView.holder
         surfaceHolder.addCallback(this)
