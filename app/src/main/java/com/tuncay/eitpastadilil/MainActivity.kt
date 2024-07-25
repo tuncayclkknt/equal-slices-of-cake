@@ -3,12 +3,14 @@
 package com.tuncay.eitpastadilil
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.Camera
 import android.os.Bundle
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.core.app.ActivityCompat
@@ -27,12 +29,36 @@ class MainActivity : ComponentActivity(), SurfaceHolder.Callback {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         enableEdgeToEdge()
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        var pieChartCounter = 2
+        binding.pieChartView.setSliceCount(2)
+
+        binding.btnPlus.setOnClickListener {
+            if (pieChartCounter >= 2 && pieChartCounter <= 20){
+                pieChartCounter++
+                binding.txtslices.text = pieChartCounter.toString()
+                binding.pieChartView.setSliceCount(pieChartCounter)
+            }else{
+                Toast.makeText(this,"En az 2, en fazla 20 dilim seç",Toast.LENGTH_LONG).show()
+            }
+
+        }
+
+        binding.btnMinus.setOnClickListener {
+            if (pieChartCounter > 3 && pieChartCounter <= 20){
+                pieChartCounter--
+                binding.txtslices.text = pieChartCounter.toString()
+                binding.pieChartView.setSliceCount(pieChartCounter)
+            }else{
+                Toast.makeText(this,"En az 2, en fazla 20 dilim seç",Toast.LENGTH_LONG).show()
+            }
+
         }
 
         val surfaceView: SurfaceView = binding.surfaceView
@@ -51,8 +77,6 @@ class MainActivity : ComponentActivity(), SurfaceHolder.Callback {
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openCamera()
-            } else {
-                // İzin verilmediğinde yapılacaklar
             }
         }
     }
